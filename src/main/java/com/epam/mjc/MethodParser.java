@@ -1,5 +1,13 @@
 package com.epam.mjc;
 
+
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+import static com.epam.mjc.MethodSignature.*;
+
 public class MethodParser {
 
     /**
@@ -20,6 +28,39 @@ public class MethodParser {
      * @return {@link MethodSignature} object filled with parsed values from source string
      */
     public MethodSignature parseFunction(String signatureString) {
-        throw new UnsupportedOperationException("You should implement this method.");
+        int f = signatureString.indexOf("(");
+        String firstHalf = String.copyValueOf(signatureString.toCharArray(),0,f);
+        String secondHalf = String.copyValueOf(signatureString.toCharArray(),f+1,signatureString.length()-f-2);
+        String[] signArray1 = firstHalf.split( " ");
+        int mod = 0;
+        MethodSignature dfg;
+        System.out.println(secondHalf);
+        secondHalf = secondHalf.replace(",","");
+        String[] paramString = secondHalf.split( " ");
+
+        dfg = new MethodSignature("null");
+
+        if(secondHalf.length()!=0){
+            List<Argument> params = new LinkedList<>();
+            for(int i= 0;paramString.length>i;i+=2){
+                params.add(new Argument(paramString[i],paramString[i+1]));
+            }
+            dfg = new MethodSignature("",params);
+
+        }
+        if(signatureString.contains("public")){
+            dfg.setAccessModifier("public");
+            mod++;
+        }
+        if(signatureString.contains("private")){
+            dfg.setAccessModifier("private");
+            mod++;
+        }
+        if (mod!=0){dfg.setReturnType(signArray1[1]);
+        dfg.setMethodName(signArray1[2]);}
+        else{dfg.setReturnType(signArray1[0]);
+            dfg.setMethodName(signArray1[1]);}
+
+        return dfg;
     }
 }
